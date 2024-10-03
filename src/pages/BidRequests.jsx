@@ -8,7 +8,7 @@ const BidRequests = () => {
     const {user}=useContext(AuthContext);
      
     const getData=async()=>{
-        const {data}=await axios(`http://localhost:9000/bids-requests/${user.email}`)
+        const {data}=await axios(`http://localhost:9000/bids-requests/${user.email}`,{withCredentials:true})
         setBids(data)
     }
     useEffect(()=>{

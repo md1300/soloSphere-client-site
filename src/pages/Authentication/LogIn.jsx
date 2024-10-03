@@ -4,6 +4,7 @@ import logo from '../../assets/images/logo.png'
 import { useContext, useEffect } from "react"
 import { AuthContext } from "../../Provider/AuthProvider"
 import toast from "react-hot-toast"
+import axios from "axios"
 
 
 const LogIn = () => {
@@ -24,12 +25,15 @@ const LogIn = () => {
 // ----------------log in with google -----------
   const handleGoogleSignIn=async()=>{
 try{
-  await signInWithGoogle()
+  const result =await signInWithGoogle()
+  console.log(result.user)
+  const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+  console.log(data)
   toast.success('successfully log in ')
   navigate(from, {replace:true} )
 }
 catch(err) {
-     console.log(err.message)
+     console.log(err)
      toast.error(err?.message)
 }
   }
@@ -43,7 +47,9 @@ catch(err) {
         const password=form.password.value;
         console.log({email,password})
         try {
-          await signIn(email,password)
+         const result= await signIn(email,password)
+         const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+  console.log(data)
           toast.success('successfully sign in ')
           navigate(from ,{replace:true} )
         }

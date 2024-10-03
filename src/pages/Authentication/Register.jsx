@@ -4,6 +4,7 @@ import bgReg from '../../assets/images/register.jpg'
 import logo from '../../assets/images/logo.png'
 import { AuthContext } from "../../Provider/AuthProvider"
 import toast from "react-hot-toast"
+import axios from "axios"
 
 const Register = () => {
 const {updateUserProfile,signInWithGoogle,createUser,setUser,user,}=useContext(AuthContext)
@@ -14,7 +15,9 @@ const from=location.state || ('/')
     // ----------------log in with google -----------
   const handleGoogleSignIn=async()=>{
     try{
-      await signInWithGoogle()
+      const result=await signInWithGoogle()
+      const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+  console.log(data)
       toast.success('successfully log in ')
       navigate(from, {replace:true})
     }
@@ -38,6 +41,8 @@ const from=location.state || ('/')
         console.log(result)
         await updateUserProfile(name,photo)
         setUser({...user,photoURL:photo,displayName:name})
+        const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+  console.log(data)
         toast.success('successfully log in ')
         navigate(from, {replace:true})
      }
