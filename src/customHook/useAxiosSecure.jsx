@@ -15,7 +15,7 @@ const navigate=useNavigate()
 // response interceptor
 axiosSecure.interceptors.response.use(
     res=>{
-        console.log('response app a aser agei ami thamay dekteci ki ase ar vitor',res)
+        // console.log('response app a aser agei ami thamay dekteci ki ase ar vitor',res)
     return res
 },
  async error=>{

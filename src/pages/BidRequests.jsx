@@ -1,27 +1,72 @@
-import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../Provider/AuthProvider"
-import axios from "axios";
+// import {  useEffect, useState } from "react"
+// import { AuthContext } from "../Provider/AuthProvider"
+// import axios from "axios";
 import toast from "react-hot-toast";
+import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../customHook/useAxiosSecure";
+import useAuth from "../customHook/useAuth";
+
 
 const BidRequests = () => {
-    const [bids,setBids]=useState([]);
-    const {user}=useContext(AuthContext);
-     
+    // const [bids,setBids]=useState([]);
+    const {user}=useAuth()
+    const axiosSecure=useAxiosSecure()
+
+    const queryClient=useQueryClient()
+
+    const {data:bids=[],
+      isLoading,
+      } = useQuery({
+      queryFn:()=>getData(),
+      queryKey:['bids',user?.email]
+    })
+    console.log(bids)
+    console.log(isLoading)
+
+    
+    
     const getData=async()=>{
-        const {data}=await axios(`http://localhost:9000/bids-requests/${user.email}`,{withCredentials:true})
-        setBids(data)
+        const {data}=await axiosSecure(`/bids-requests/${user.email}`)
+        return (data)
     }
-    useEffect(()=>{
-        getData()
-    },[user])
+    // useEffect(()=>{
+    //     getData()
+    // },[user])
+
+    // mutation is used if use fetch and not use async function --------
+ const {mutateAsync}=useMutation({
+     mutationFn:async({id,status})=>{
+       
+      const {data}=await axiosSecure.patch(`/bid/${id}`,{status})
+      console.log(data)
+     },
+     onSuccess:()=>{
+      console.log('wow, data updated')
+      toast.success('updated')
+      // refresh ui for latest data
+      // refetch()
+    queryClient.invalidateQueries({queryKey:['bids']})
+
+     }
+ })
+    
 
     const handleStatus=async(id,currentStatus,status)=>{
         if(currentStatus===status) return toast.error('sorry already accepted')
-         const {data}=await axios.patch(`http://localhost:9000/bid/${id}`,{status})
-         console.log(data)
-         getData()
+        //  const {data}=await axiosSecure.patch(`/bid/${id}`,{status})
+        //  console.log(data)
+        // ui refresh data
+        //  getData()
+
+       
+   await mutateAsync({id,status})
         
     }
+
+if(isLoading) return <p>data is still loading ...............</p>
+// if(isError || error){
+//   console.log(isError,error)
+// }
 
     return (
       <section className='container px-4 mx-auto pt-12'>
