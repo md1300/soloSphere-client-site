@@ -1,14 +1,15 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import login from '../../assets/images/login.jpg'
 import logo from '../../assets/images/logo.png'
-import { useContext, useEffect } from "react"
-import { AuthContext } from "../../Provider/AuthProvider"
+import {  useEffect } from "react"
 import toast from "react-hot-toast"
 import axios from "axios"
+import useAuth from "../../customHook/useAuth"
 
 
 const LogIn = () => {
-  const { signIn,signInWithGoogle,user,loading}=useContext(AuthContext)
+  const { signIn,signInWithGoogle,user,loading}=useAuth()
+  // const { signIn,signInWithGoogle,user,loading}=useContext(AuthContext)
   const location=useLocation() 
   const navigate=useNavigate()
 
