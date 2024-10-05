@@ -5,12 +5,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import useAxiosSecure from "../customHook/useAxiosSecure";
 
 const JobDetails = () => {
   const {user}=useContext(AuthContext)
   const [startDate, setStartDate] = useState(new Date());
   const job=useLoaderData()
   const navigate=useNavigate()
+  const axiosSecure=useAxiosSecure()
   const {_id,category,job_title,deadline,description,min_price,max_price, buyer}=job;
   // console.log(buyer)
 
@@ -31,14 +33,16 @@ const JobDetails = () => {
     const bidData={price,category,comment,job_id,email,buyer,status,deadline,job_title}
   //  console.log(bidData)
    try{
-    const {data}=await axios.post(`${import.meta.env.VITE_API_URL}/bid`,bidData)
+    const {data}=await axiosSecure.post(`/bid`,bidData)
     console.log(data)
     toast.success('successfully added your bid')
     navigate('/my-bids')
    }
    catch(err){
-    console.log('this is error',err)
-    toast.error(err.message)
+    
+    toast.error(err.response.data)
+    // form.reset()
+    e.target.reset()
    }
 
   }
@@ -98,6 +102,7 @@ const JobDetails = () => {
                   id='price'
                   type='text'
                   name='price'
+                  required
                   className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
                 />
               </div>
