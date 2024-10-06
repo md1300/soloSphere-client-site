@@ -27,7 +27,7 @@ const UpdateJob = () => {
       console.log(jobData)
 
       try{
-        const {data}=await axios.put(`http://localhost:9000/job/${_id}`,jobData)
+        const {data}=await axios.put(`${import.meta.env.VITE_API_URL}/job/${_id}`,jobData)
         console.log(data)
         toast.success('successfully updated posted data')
         navigate('/my-posted-jobs')

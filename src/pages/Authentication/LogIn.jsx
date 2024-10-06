@@ -28,7 +28,7 @@ const LogIn = () => {
 try{
   const result =await signInWithGoogle()
   console.log(result.user)
-  const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+  const {data}=await axios.post(`${import.meta.env.VITE_API_URL}/jwt`,{email:result?.user?.email},{withCredentials:'include'})
   console.log(data)
   toast.success('successfully log in ')
   navigate(from, {replace:true} )
@@ -49,7 +49,7 @@ catch(err) {
         console.log({email,password})
         try {
          const result= await signIn(email,password)
-         const {data}=await axios.post('http://localhost:9000/jwt',{email:result?.user?.email},{withCredentials:'include'})
+         const {data}=await axios.post(`${import.meta.env.VITE_API_URL}/jwt`,{email:result?.user?.email},{withCredentials:'include'})
   console.log(data)
           toast.success('successfully sign in ')
           navigate(from ,{replace:true} )
