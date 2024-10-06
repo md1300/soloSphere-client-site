@@ -6,21 +6,21 @@ import JobCard from '../Components/JobCard'
 
 
 const AllJobs = () => {
-const [itemsPerPage,setItemsPerPage]=useState(2)
+const [itemsPerPage,setItemsPerPage]=useState(4)
 const [currnetPage,setCurrentPage]=useState(1)
 const [count,setCount]=useState(0)
 const [filter,setFilter]=useState('')
-
-   const [jobs,setJobs]=useState([])
+const [sort,setSort]=useState('')
+const [jobs,setJobs]=useState([])
  
     useEffect(()=>{
         const getData=async()=>{
-          const {data}=await axios(`${import.meta.env.VITE_API_URL}/all-jobs?page=${currnetPage}&size=${itemsPerPage}&filter=${filter}`)
+          const {data}=await axios(`${import.meta.env.VITE_API_URL}/all-jobs?page=${currnetPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}`)
           setJobs(data)
       
         }
         getData()
-      },[currnetPage,itemsPerPage,filter])
+      },[currnetPage,itemsPerPage,filter,sort])
 
     useEffect(()=>{
         const getData=async()=>{
@@ -39,6 +39,11 @@ const numberOfPages=Math.ceil(count/itemsPerPage)
 const handlePaginationPage=value=>{
     // console.log(value)
     setCurrentPage(value)
+}
+
+const handleResetButton =()=>{
+  setFilter('')
+  setSort('')
 }
 
   return (
@@ -79,8 +84,13 @@ const handlePaginationPage=value=>{
           </form>
           <div>
             <select
-              name='category'
-              id='category'
+              onChange={e=>{
+                setSort(e.target.value)
+                setCurrentPage(1)
+              }}
+              name='sort'
+              id='sort'
+              value={sort}
               className='border p-4 rounded-md'
             >
               <option value=''>Sort By Deadline</option>
@@ -88,7 +98,7 @@ const handlePaginationPage=value=>{
               <option value='asc'>Ascending Order</option>
             </select>
           </div>
-          <button className='btn'>Reset</button>
+          <button onClick={handleResetButton} className='btn'>Reset</button>
         </div>
         <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {
